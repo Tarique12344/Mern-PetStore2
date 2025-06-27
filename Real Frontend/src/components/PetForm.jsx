@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-// import NavigationBar from './NavigationBar'; // Uncomment if you have a Navbar component
+import { Link, useNavigate } from 'react-router-dom';
+import '../styles/petform.css';
+import '../styles/homepage.css'
+import NavBar from './NavBar';
+import Footer from './Footer';
+
 
 const PetForm = () => {
   const [name, setName] = useState('');
@@ -39,7 +43,7 @@ const PetForm = () => {
 
       if (response.ok) {
         console.log('Pet added successfully');
-        navigate('/shop'); // Update this path if needed
+        navigate('/shop');
       } else {
         console.error('Error adding pet:', response.statusText);
         setErrorMessage('Error adding pet. Please try again.');
@@ -54,96 +58,78 @@ const PetForm = () => {
 
   return (
     <div>
-      {/* Optional Navigation Bar */}
-      {/* <NavigationBar /> */}
+      {/* Banner */}
+     <header>
+        <div className="banner">Simple Pets</div>
+      </header>
 
-      <div className="container mt-5">
-        <div className="row justify-content-center">
-          <div className="col-md-6">
-            <div className="card p-4 shadow">
-              <h2 className="text-center mb-4">Add a Pet</h2>
-              <form onSubmit={handleSubmit}>
-                <div className="mb-3">
-                  <label htmlFor="petName" className="form-label">Pet Name:</label>
-                  <input
-                    id="petName"
-                    type="text"
-                    className="form-control"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                  />
-                </div>
+      {/* Navbar */}
+  
+      <NavBar />
 
-                <div className="mb-3">
-                  <label htmlFor="petType" className="form-label">Pet Type:</label>
-                  <input
-                    id="petType"
-                    type="text"
-                    className="form-control"
-                    value={type}
-                    onChange={(e) => setType(e.target.value)}
-                    required
-                  />
-                </div>
+      {/* Pet Form */}
+      <div className="pet-form-wrapper">
+        <h2>Add a Pet</h2>
+        <form onSubmit={handleSubmit}>
+          <label htmlFor="petName">Pet Name:</label>
+          <input
+            id="petName"
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
 
-                <div className="mb-3">
-                  <label htmlFor="petBreed" className="form-label">Breed:</label>
-                  <input
-                    id="petBreed"
-                    type="text"
-                    className="form-control"
-                    value={breed}
-                    onChange={(e) => setBreed(e.target.value)}
-                  />
-                </div>
+          <label htmlFor="petType">Pet Type:</label>
+          <input
+            id="petType"
+            type="text"
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+            required
+          />
 
-                <div className="mb-3">
-                  <label htmlFor="petAge" className="form-label">Age:</label>
-                  <input
-                    id="petAge"
-                    type="number"
-                    className="form-control"
-                    value={age}
-                    onChange={(e) => setAge(e.target.value)}
-                  />
-                </div>
+          <label htmlFor="petBreed">Breed:</label>
+          <input
+            id="petBreed"
+            type="text"
+            value={breed}
+            onChange={(e) => setBreed(e.target.value)}
+          />
 
-                <div className="mb-3">
-                  <label htmlFor="petDescription" className="form-label">Description:</label>
-                  <textarea
-                    id="petDescription"
-                    className="form-control"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                  />
-                </div>
+          <label htmlFor="petAge">Age:</label>
+          <input
+            id="petAge"
+            type="number"
+            value={age}
+            onChange={(e) => setAge(e.target.value)}
+          />
 
-                <div className="mb-3">
-                  <label htmlFor="petImage" className="form-label">Image URL:</label>
-                  <input
-                    id="petImage"
-                    type="url"
-                    className="form-control"
-                    value={imageURL}
-                    onChange={(e) => setImageURL(e.target.value)}
-                  />
-                </div>
+          <label htmlFor="petDescription">Description:</label>
+          <textarea
+            id="petDescription"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
 
-                <div className="text-center">
-                  <button type="submit" disabled={loading} className="btn btn-primary">
-                    {loading ? 'Adding...' : 'Add Pet'}
-                  </button>
-                </div>
+          <label htmlFor="petImage">Image URL:</label>
+          <input
+            id="petImage"
+            type="url"
+            value={imageURL}
+            onChange={(e) => setImageURL(e.target.value)}
+          />
 
-                {errorMessage && (
-                  <p className="text-danger text-center mt-3">{errorMessage}</p>
-                )}
-              </form>
-            </div>
-          </div>
-        </div>
+          <button type="submit" disabled={loading} className="pet-form-button">
+            {loading ? 'Adding...' : 'Add Pet'}
+          </button>
+
+          {errorMessage && (
+            <p className="pet-form-error">{errorMessage}</p>
+          )}
+        </form>
       </div>
+        <Footer />
     </div>
   );
 };

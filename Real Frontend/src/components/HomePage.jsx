@@ -3,6 +3,8 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/homepage.css';
 import NavBar from './NavBar';
+import Footer from './Footer';
+
 
 const HomePage = () => {
   return (
@@ -12,34 +14,60 @@ const HomePage = () => {
       </header>
 
       <NavBar />
+<section className="my-5 container-fluid px-0">
+  <div id="petCarousel" className="carousel slide" data-bs-ride="carousel">
+    <div className="carousel-inner rounded shadow">
+      <div className="carousel-item active">
+        <img
+          src="https://place-puppy.com/1200x400"
+          alt="Cute Puppy"
+          className="d-block w-100"
+        />
+      </div>
+      <div className="carousel-item">
+        <img
+          src="/Images/basketKitties.jpg"
+          alt="Cute Cats"
+          className="d-block w-100"
+        />
+      </div>
+      <div className="carousel-item">
+        <img
+          src="/Images/Rabbit2.jpg"
+          alt="Rabbit"
+          className="d-block w-100"
+        />
+      </div>
+      <div className="carousel-item">
+        <img
+          src="/Images/gerbil.jpg"
+          alt="Gerbil"
+          className="d-block w-100"
+        />
+      </div>
+    </div>
 
-      <section className="my-5 container-fluid px-0">
-        <div id="petCarousel" className="carousel slide" data-bs-ride="carousel">
-          <div className="carousel-inner rounded shadow">
-            <div className="carousel-item active">
-              <img src="/Images/chewyDogs.jpg" className="d-block w-100" alt="Dog" />
-            </div>
-            <div className="carousel-item">
-              <img src="/Images/basketKitties.jpg" className="d-block w-100" alt="Cat" />
-            </div>
-            <div className="carousel-item">
-              <img src="/Images/Rabbit2.jpg" className="d-block w-100" alt="Rabbit" />
-            </div>
-            <div className="carousel-item">
-              <img src="/Images/gerbil.jpg" className="d-block w-100" alt="Gerbil" />
-            </div>
-          </div>
+    <button
+      className="carousel-control-prev"
+      type="button"
+      data-bs-target="#petCarousel"
+      data-bs-slide="prev"
+    >
+      <span className="carousel-control-prev-icon" aria-hidden="true" />
+      <span className="visually-hidden">Previous</span>
+    </button>
+    <button
+      className="carousel-control-next"
+      type="button"
+      data-bs-target="#petCarousel"
+      data-bs-slide="next"
+    >
+      <span className="carousel-control-next-icon" aria-hidden="true" />
+      <span className="visually-hidden">Next</span>
+    </button>
+  </div>
+</section>
 
-          <button className="carousel-control-prev" type="button" data-bs-target="#petCarousel" data-bs-slide="prev">
-            <span className="carousel-control-prev-icon" />
-            <span className="visually-hidden">Previous</span>
-          </button>
-          <button className="carousel-control-next" type="button" data-bs-target="#petCarousel" data-bs-slide="next">
-            <span className="carousel-control-next-icon" />
-            <span className="visually-hidden">Next</span>
-          </button>
-        </div>
-      </section>
 
       <section className="container my-5">
         <h2 className="text-center mb-4">🐾 Featured Animals 🐾</h2>
@@ -67,10 +95,7 @@ const HomePage = () => {
           </div>
         </div>
       </section>
-
-      <footer className="text-center bg-dark text-white py-3 mt-5">
-        <p className="mb-0">&copy; 2025 Simple Pets 🐾 | Built with ❤️</p>
-      </footer>
+        <Footer />
     </div>
   );
 };
