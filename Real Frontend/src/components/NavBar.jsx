@@ -1,35 +1,53 @@
-import React, { useState } from 'react';
-import '../styles/homepage.css'
+// src/components/NavBar.jsx
 
+import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 const NavBar = () => {
-  const [navOpen, setNavOpen] = useState(false);
+  const navigate = useNavigate();
+  const isLoggedIn = !!localStorage.getItem('token');
 
-  const toggleNav = () => setNavOpen(prev => !prev);
-
-  const closeNav = () => setNavOpen(false);
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/login');
+  };
 
   return (
-    <nav className={`pet-navbar ${navOpen ? 'nav-open' : ''}`}>
+    <nav className="pet-navbar">
       <div
         className="nav-toggle"
-        onClick={toggleNav}
-        role="button"
-        tabIndex={0}
-        onKeyPress={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') toggleNav();
-        }}
-        aria-label="Toggle navigation menu"
+        onClick={() => document.getElementById('navbar').classList.toggle('nav-open')}
       >
         ☰ Menu
       </div>
-
       <div className="nav-links">
-        <a href="/" onClick={closeNav}>🏠 Home</a>
-        <a href="/about" onClick={closeNav}>🐶 About</a>
-        <a href="/services" onClick={closeNav}>🛁 Products</a>
-        <a href="/shop" onClick={closeNav}>🛒 Adoption</a>
-        <a href="/contact" onClick={closeNav}>📞 Contact</a>
+        <Link to="/">🏠 Home</Link>
+        <Link to="/about">🐶 About</Link>
+        <Link to="/shop">🛒 Adoption</Link>
+        <Link to="/add-pet">➕ Add Pet</Link>
+        <Link to="/contact">📞 Contact</Link> {/* ✅ Added back Contact tab */}
+
+        {isLoggedIn ? (
+          <span
+            onClick={handleLogout}
+            style={{
+              cursor: 'pointer',
+              color: '#4b2e2e',
+              padding: '10px 20px',
+              backgroundColor: '#88c7e4',
+              borderRadius: '20px',
+              textAlign: 'center',
+              userSelect: 'none'
+            }}
+          >
+            🚪 Logout
+          </span>
+        ) : (
+          <>
+            <Link to="/login">🔑 Login</Link>
+            <Link to="/signup">📝 Signup</Link>
+          </>
+        )}
       </div>
     </nav>
   );

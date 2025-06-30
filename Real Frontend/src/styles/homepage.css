@@ -131,20 +131,25 @@ header .banner {
   padding: 0 1rem;
 }
 
-.animal-card {
-  background-color: #fef9f4;
-  padding: 1rem;
-  border-radius: 1rem;
-  text-align: center;
-  width: 250px;
+/* --- Rounded card with shadow --- */
+.card {
+  border-radius: 1rem; /* rounded corners */
+  overflow: hidden; /* clip children */
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  background-color: #fef9f4;
 }
 
-.animal-img {
+.card-img-top {
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+  object-fit: cover;
+  height: 250px;
   width: 100%;
-  height: auto;
-  border-radius: 0.75rem;
-  margin-bottom: 0.5rem;
+}
+
+.animal-card {
+  text-align: center;
+  width: 250px;
 }
 
 .animal-title {
@@ -163,17 +168,7 @@ header .banner {
   margin-top: 10px;
 }
 
-.card-img-top {
-  height: 250px;
-  object-fit: cover;
-  border-top-left-radius: 1rem;
-  border-top-right-radius: 1rem;
-}
-
-.card {
-  border-radius: 1rem;
-}
-
+/* Button hover */
 .btn-warning {
   font-weight: bold;
   transition: transform 0.2s;
