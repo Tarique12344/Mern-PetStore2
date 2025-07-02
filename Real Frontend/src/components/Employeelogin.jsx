@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import NavBar from './NavBar';
 import Footer from './Footer';
-import '../styles/homepage.css'
+import '../styles/homepage.css';
 
-const Login = () => {
+const EmployeeLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
@@ -48,9 +48,12 @@ const Login = () => {
       {/* Navbar */}
       <NavBar />
 
-      {/* Login Form */}
+      {/* Employee Login Form */}
       <div className="container mt-5" style={{ maxWidth: '400px' }}>
-        <h2>🔐 Login</h2>
+        <h2>🔐 Employee Login</h2>
+        <p style={{ textAlign: 'center', marginBottom: '20px', color: '#555' }}>
+          Employees can login here
+        </p>
         <form onSubmit={handleLogin}>
           <input
             type="email"
@@ -75,12 +78,6 @@ const Login = () => {
           </button>
         </form>
         {message && <p className="mt-3 text-center">{message}</p>}
-        <p className="mt-3 text-center">
-          Don’t have an account? <a href="/signup">Sign up here</a>
-        </p>
-        <p className="text-center">
-          Employee? <a href="/employee-login">Login here</a>
-        </p>
       </div>
 
       {/* Footer */}
@@ -89,4 +86,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default EmployeeLogin;

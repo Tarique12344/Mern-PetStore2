@@ -24,11 +24,13 @@ router.post('/login', async (req, res) => {
   const isMatch = await user.comparePassword(password);
   if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
 
-  const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET || 'secret', {
-    expiresIn: '1d',
-  });
+  const token = jwt.sign(
+    { userId: user._id, isAdmin: user.isAdmin }, // Include isAdmin in payload
+    process.env.JWT_SECRET || 'secret',
+    { expiresIn: '1d' }
+  );
 
-  res.json({ token });
+  res.json({ token, isAdmin: user.isAdmin }); // Return isAdmin to frontend
 });
 
 module.exports = router;

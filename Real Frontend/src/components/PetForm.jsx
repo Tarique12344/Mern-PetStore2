@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/petform.css';
 import '../styles/homepage.css';
@@ -11,11 +11,21 @@ const PetForm = () => {
   const [description, setDescription] = useState('');
   const [age, setAge] = useState('');
   const [breed, setBreed] = useState('');
-  const [imageFile, setImageFile] = useState(null); // for local file
+  const [imageFile, setImageFile] = useState(null);
   const [previewURL, setPreviewURL] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
+
+  const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+
+  // ✅ Redirect immediately if not logged in
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+    }
+  }, [navigate]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -30,68 +40,53 @@ const PetForm = () => {
     setLoading(true);
     setErrorMessage('');
 
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setErrorMessage('You must be logged in to add a pet.');
+      setLoading(false);
+      return;
+    }
+
     try {
-      // Convert the local file to Base64 (or handle upload logic based on your backend)
       let imageBase64 = '';
       if (imageFile) {
-        const reader = new FileReader();
-        reader.onloadend = async () => {
-          imageBase64 = reader.result;
-
-          const requestData = {
-            name,
-            type,
-            description,
-            age: Number(age),
-            breed,
-            image: imageBase64, // send base64 string to backend
-          };
-
-          const response = await fetch('http://localhost:5000/api/pets', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(requestData),
-          });
-
-          if (response.ok) {
-            console.log('Pet added successfully');
-            navigate('/shop');
-          } else {
-            console.error('Error adding pet:', response.statusText);
-            setErrorMessage('Error adding pet. Please try again.');
-          }
-          setLoading(false);
-        };
-        reader.readAsDataURL(imageFile);
-      } else {
-        // If no image provided
-        const requestData = {
-          name,
-          type,
-          description,
-          age: Number(age),
-          breed,
-          image: '', // or handle default image logic
-        };
-
-        const response = await fetch('http://localhost:5000/api/pets', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(requestData),
+        imageBase64 = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.onerror = () => reject('Failed to read image file');
+          reader.readAsDataURL(imageFile);
         });
+      }
 
-        if (response.ok) {
-          console.log('Pet added successfully');
-          navigate('/shop');
-        } else {
-          console.error('Error adding pet:', response.statusText);
-          setErrorMessage('Error adding pet. Please try again.');
-        }
-        setLoading(false);
+      const requestData = {
+        name,
+        type,
+        description,
+        age: Number(age),
+        breed,
+        image: imageBase64,
+      };
+
+      const response = await fetch(`${baseURL}/api/pets`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(requestData),
+      });
+
+      if (response.ok) {
+        console.log('Pet added successfully');
+        navigate('/shop');
+      } else {
+        const errData = await response.json();
+        setErrorMessage(errData.message || 'Error adding pet. Please try again.');
       }
     } catch (error) {
-      console.error('Error adding pet:', error.message);
+      console.error('Error adding pet:', error);
       setErrorMessage('Error adding pet. Please try again later.');
+    } finally {
       setLoading(false);
     }
   };
@@ -110,26 +105,61 @@ const PetForm = () => {
         <h2>Add a Pet</h2>
         <form onSubmit={handleSubmit}>
           <label htmlFor="petName">Pet Name:</label>
-          <input id="petName" type="text" value={name} onChange={(e) => setName(e.target.value)} required />
+          <input
+            id="petName"
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
 
           <label htmlFor="petType">Pet Type:</label>
-          <input id="petType" type="text" value={type} onChange={(e) => setType(e.target.value)} required />
+          <input
+            id="petType"
+            type="text"
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+            required
+          />
 
           <label htmlFor="petBreed">Breed:</label>
-          <input id="petBreed" type="text" value={breed} onChange={(e) => setBreed(e.target.value)} />
+          <input
+            id="petBreed"
+            type="text"
+            value={breed}
+            onChange={(e) => setBreed(e.target.value)}
+          />
 
           <label htmlFor="petAge">Age:</label>
-          <input id="petAge" type="number" value={age} onChange={(e) => setAge(e.target.value)} />
+          <input
+            id="petAge"
+            type="number"
+            value={age}
+            onChange={(e) => setAge(e.target.value)}
+          />
 
           <label htmlFor="petDescription">Description:</label>
-          <textarea id="petDescription" value={description} onChange={(e) => setDescription(e.target.value)} />
+          <textarea
+            id="petDescription"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
 
           <label htmlFor="petImage">Pet Image:</label>
-          <input id="petImage" type="file" accept="image/*" onChange={handleImageChange} />
+          <input
+            id="petImage"
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+          />
 
           {previewURL && (
             <div style={{ marginTop: '10px', textAlign: 'center' }}>
-              <img src={previewURL} alt="Preview" style={{ maxWidth: '200px', borderRadius: '10px' }} />
+              <img
+                src={previewURL}
+                alt="Preview"
+                style={{ maxWidth: '200px', borderRadius: '10px' }}
+              />
             </div>
           )}
 

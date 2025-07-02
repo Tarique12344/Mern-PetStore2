@@ -1,8 +1,36 @@
+// backend/routes/petRoutes.js
+
 const express = require('express');
 const router = express.Router();
 const Pet = require('../models/pets');
+const jwt = require('jsonwebtoken');
+const User = require('../models/User'); // add for admin check
 
-// GET all pets
+// Utility middleware to verify JWT for protected routes
+const verifyToken = async (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+
+  if (!authHeader) return res.status(401).json({ message: 'No token provided' });
+
+  const token = authHeader.split(' ')[1];
+  if (!token) return res.status(401).json({ message: 'Token missing' });
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.userId = decoded.userId;
+
+    // Fetch user to check admin status
+    const user = await User.findById(req.userId);
+    if (!user) return res.status(401).json({ message: 'User not found' });
+
+    req.user = user;
+    next();
+  } catch (err) {
+    return res.status(403).json({ message: 'Invalid token' });
+  }
+};
+
+// GET all pets (public)
 router.get('/', async (req, res) => {
   try {
     const pets = await Pet.find();
@@ -12,8 +40,12 @@ router.get('/', async (req, res) => {
   }
 });
 
-// POST new pet
-router.post('/', async (req, res) => {
+// POST new pet (admin protected)
+router.post('/', verifyToken, async (req, res) => {
+  if (!req.user.isAdmin) {
+    return res.status(403).json({ message: 'Access denied: Admins only' });
+  }
+
   const pet = new Pet({
     name: req.body.name,
     type: req.body.type,
@@ -21,7 +53,7 @@ router.post('/', async (req, res) => {
     age: req.body.age,
     description: req.body.description,
     image: req.body.image,
-    likes: req.body.likes
+    likes: req.body.likes || 0
   });
 
   try {

@@ -1,16 +1,25 @@
 // src/components/NavBar.jsx
-
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 const NavBar = () => {
   const navigate = useNavigate();
-  const isLoggedIn = !!localStorage.getItem('token');
+  const [isLoggedIn, setIsLoggedIn] = useState(null); // null while loading
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    setIsLoggedIn(!!token);
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     navigate('/login');
   };
+
+  // While checking login status, render nothing or a minimal skeleton
+  if (isLoggedIn === null) {
+    return null; // or a loading skeleton
+  }
 
   return (
     <nav className="pet-navbar">
@@ -24,8 +33,8 @@ const NavBar = () => {
         <Link to="/">🏠 Home</Link>
         <Link to="/about">🐶 About</Link>
         <Link to="/shop">🛒 Adoption</Link>
-        <Link to="/add-pet">➕ Add Pet</Link>
-        <Link to="/contact">📞 Contact</Link> {/* ✅ Added back Contact tab */}
+        {isLoggedIn && <Link to="/add-pet">➕ Add Pet</Link>}
+        <Link to="/contact">📞 Contact</Link>
 
         {isLoggedIn ? (
           <span
@@ -37,7 +46,7 @@ const NavBar = () => {
               backgroundColor: '#88c7e4',
               borderRadius: '20px',
               textAlign: 'center',
-              userSelect: 'none'
+              userSelect: 'none',
             }}
           >
             🚪 Logout
