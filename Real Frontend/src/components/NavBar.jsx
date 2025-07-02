@@ -5,14 +5,18 @@ import { Link, useNavigate } from 'react-router-dom';
 const NavBar = () => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(null); // null while loading
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
+    const adminFlag = localStorage.getItem('isAdmin') === 'true';
     setIsLoggedIn(!!token);
+    setIsAdmin(adminFlag);
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('isAdmin'); // clear admin flag on logout
     navigate('/login');
   };
 
@@ -33,7 +37,7 @@ const NavBar = () => {
         <Link to="/">🏠 Home</Link>
         <Link to="/about">🐶 About</Link>
         <Link to="/shop">🛒 Adoption</Link>
-        {isLoggedIn && <Link to="/add-pet">➕ Add Pet</Link>}
+        {isLoggedIn && isAdmin && <Link to="/add-pet">➕ Add Pet</Link>}
         <Link to="/contact">📞 Contact</Link>
 
         {isLoggedIn ? (

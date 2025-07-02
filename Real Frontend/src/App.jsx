@@ -23,7 +23,7 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-       <Route path="/emloyee-login" element={<EmployeeLogin />} /> {/* employee login */}
+        <Route path="/employee-login" element={<EmployeeLogin />} /> {/* ✅ fixed path */}
 
         {/* 🛡️ Protected Route for Add Pet */}
         <Route

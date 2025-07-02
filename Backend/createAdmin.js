@@ -9,7 +9,7 @@ const createAdmin = async () => {
     });
 
     const email = "employee@simplepets.com";
-    const password = "password123"; // use a secure password
+    const password = 'SimplePetsAdmin!2025'; // use a secure password
 
     try {
         const existingUser = await User.findOne({ email });
